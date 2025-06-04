@@ -4,15 +4,16 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+require('dotenv').config();
 @Module({
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: 'your_jwt_secret', // غيّره في بيئة الإنتاج
-      signOptions: { expiresIn: '1h' },
+      secret: process.env.JWT_SECRET, 
+      signOptions:  { expiresIn: process.env.JWT_EXPIRES_IN },
     }),
   ],
-  providers: [AuthService, JwtStrategy],  // أضف JwtStrategy هنا
+  providers: [AuthService, JwtStrategy],  
   controllers: [AuthController],
 })
 export class AuthModule {}

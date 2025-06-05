@@ -110,8 +110,4 @@ npm run start:dev
 3. Add user profiles
 4. Add more security features
 
-## Need Help?
-- Check the error messages
-- Make sure all environment variables are set
-- Verify your MongoDB connection
-- Check if the server is running
+

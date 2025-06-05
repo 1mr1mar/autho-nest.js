@@ -1,98 +1,117 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Authentication Backend - Simple Guide
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## What This Project Does
+This is a simple authentication system that lets users:
+1. Register (create a new account)
+2. Login (access their account)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## How to Use
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
+### 1. Register a New User
+Send this request to create a new account:
 ```bash
-$ npm install
+curl -X POST http://localhost:3000/auth/register \
+-H "Content-Type: application/json" \
+-d '{"email": "your@email.com", "password": "yourpassword"}'
 ```
 
-## Compile and run the project
-
+### 2. Login
+Send this request to login:
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+curl -X POST http://localhost:3000/auth/login \
+-H "Content-Type: application/json" \
+-d '{"email": "your@email.com", "password": "yourpassword"}'
 ```
 
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+Both will give you back a token like this:
+```json
+{
+  "access_token": "your.jwt.token"
+}
 ```
 
-## Deployment
+## How It Works (Simple Explanation)
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 1. Registration Process
+When you register:
+1. Your password is encrypted (made secure)
+2. Your email and encrypted password are saved
+3. You get a special token (JWT) to use later
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 2. Login Process
+When you login:
+1. The system checks if your email exists
+2. It verifies your password
+3. If correct, you get a new token
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+### 3. Security Features
+- Passwords are never stored as plain text
+- Each email can only be used once
+- Tokens expire after 24 hours
+
+## Project Structure
+
+```
+src/
+├── auth/                 # Authentication stuff
+│   ├── auth.controller.ts    # Handles requests
+│   ├── auth.service.ts       # Main logic
+│   └── jwt.strategy.ts       # Token handling
+├── users/                # User management
+│   ├── users.service.ts      # User operations
+│   └── schemas/             # Database structure
+└── config/               # Settings
+    └── configuration.ts      # Environment setup
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Setup
 
-## Resources
+1. Create a `.env` file with:
+```
+MONGODB_URI=your_mongodb_connection
+JWT_SECRET=your_secret_key
+PORT=3000
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+2. Install dependencies:
+```bash
+npm install
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+3. Start the server:
+```bash
+npm run start:dev
+```
 
-## Support
+## Common Issues
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. **Can't Connect to Database**
+   - Check your MongoDB connection string
+   - Make sure MongoDB is running
 
-## Stay in touch
+2. **Registration Fails**
+   - Email might already be used
+   - Password must be at least 6 characters
+   - Email must be valid format
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+3. **Login Fails**
+   - Check if email exists
+   - Verify password is correct
 
-## License
+## Technologies Used
+- NestJS (Backend framework)
+- MongoDB (Database)
+- JWT (Authentication tokens)
+- bcrypt (Password security)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Next Steps
+1. Add password reset
+2. Add email verification
+3. Add user profiles
+4. Add more security features
+
+## Need Help?
+- Check the error messages
+- Make sure all environment variables are set
+- Verify your MongoDB connection
+- Check if the server is running

@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import configuration from './config/configuration';
 import { winstonConfig } from './config/winston.config';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { winstonConfig } from './config/winston.config';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
+      envFilePath: path.resolve(process.cwd(), '.env'),
     }),
     
     // Database
